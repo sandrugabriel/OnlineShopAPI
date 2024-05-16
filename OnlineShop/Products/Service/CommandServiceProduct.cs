@@ -5,6 +5,7 @@ using OnlineShop.Products.Repository.interfaces;
 using OnlineShop.Products.Service.interfaces;
 using OnlineShop.System.Constants;
 using OnlineShop.System.Exceptions;
+using System.Data.Entity.Core.Metadata.Edm;
 
 namespace OnlineShop.Products.Service
 {
@@ -33,7 +34,7 @@ namespace OnlineShop.Products.Service
         public async Task<DtoProductView> Update(int id, UpdateRequestProduct request)
         {
 
-            var product = await _repository.GetById(id);
+            var product = await _repository.GetByIdAsync(id);
             if (product == null)
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
@@ -45,20 +46,35 @@ namespace OnlineShop.Products.Service
                 throw new InvalidPrice(Constants.InvalidPrice);
             }
 
-            DtoProductView dtoProductView = new DtoProductView();
-            dtoProductView.Id = product.Id;
-            dtoProductView.Name = product.Name;
-            dtoProductView.Price = product.Price;
-            dtoProductView.Create_date = product.Create_date;
-            dtoProductView.Category = product.Category;
-            dtoProductView.Stock = product.Stock;
 
-            dtoProductView = await _repository.UpdateAsync(id, request);
+             await _repository.UpdateAsync(id, request);
 
-            return dtoProductView;
+            return product;
         }
 
         public async Task<DtoProductView> Delete(int id)
+        {
+            
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null)
+            {
+                throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+            }
+            await _repository.DeleteById(id);
+
+            return product;
+        }
+
+        public async Task<DtoProductView> AddOption(int id, string name)
+        {
+            var p = await _repository.GetById(id);
+            if(p == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+            var product = await _repository.AddOption(id, name);
+            if (product == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+            return product;
+        }
+
+        public async Task<DtoProductView> DeleteOption(int id, string name)
         {
 
             var product = await _repository.GetById(id);
@@ -66,19 +82,12 @@ namespace OnlineShop.Products.Service
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
-            await _repository.DeleteById(id);
+            var dto =  await _repository.DeleteOption(id,name);
 
+            if(dto == null)
+                throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
 
-            DtoProductView dtoProductView = new DtoProductView();
-            dtoProductView.Id = product.Id;
-            dtoProductView.Name = product.Name;
-            dtoProductView.Price = product.Price;
-            dtoProductView.Create_date = product.Create_date;
-            dtoProductView.Category = product.Category;
-            dtoProductView.Stock = product.Stock;
-
-            return dtoProductView;
+            return dto;
         }
-
     }
 }
