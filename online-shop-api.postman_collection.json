@@ -1,0 +1,884 @@
+{
+	"info": {
+		"_postman_id": "bde8d0a4-0b91-47a9-896e-1ef3b18fea83",
+		"name": "online-shop-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33668461"
+	},
+	"item": [
+		{
+			"name": "ControllerCustomer",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/All",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/FindById?id=5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"FindById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/FindByName?name=filip",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"FindByName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "filip"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"test@email.com\",\r\n  \"password\": \"1234\",\r\n  \"fullName\": \"test\",\r\n  \"phoneNumber\": \"0777777\",\r\n  \"address\": \"asdf\",\r\n  \"country\": \"asdfg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/CreateCustomer",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"CreateCustomer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"test12@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/UpdateCustomer?id=5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"UpdateCustomer"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/DeleteCustomer?id=6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"DeleteCustomer"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ProductToOrder",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/AddProductToOrder?idCurtomer=5&name=s24&option=with%20case&quantity=2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"AddProductToOrder"
+							],
+							"query": [
+								{
+									"key": "idCurtomer",
+									"value": "5"
+								},
+								{
+									"key": "name",
+									"value": "s24"
+								},
+								{
+									"key": "option",
+									"value": "with%20case"
+								},
+								{
+									"key": "quantity",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/DeleteOrder?id=5&idOrder=8",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"DeleteOrder"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5"
+								},
+								{
+									"key": "idOrder",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ProductToOrder",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerCustomer/DeleteProductToOrder?id=5&name=s24&option=with%20case",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerCustomer",
+								"DeleteProductToOrder"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5"
+								},
+								{
+									"key": "name",
+									"value": "s24"
+								},
+								{
+									"key": "option",
+									"value": "with%20case"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ControllerProduct",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/All",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/FindById?id=1\n",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"FindById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1\n"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/FindByName?name=test",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"FindByName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"test234\",\r\n  \"price\": 10,\r\n  \"category\": \"test2345\",\r\n  \"stock\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/CreateProduct",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"CreateProduct"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/UpdateProduct?id=10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"UpdateProduct"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/DeleteProduct?id=10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"DeleteProduct"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Option",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/AddOption?id=6&name=with%20case",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"AddOption"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6"
+								},
+								{
+									"key": "name",
+									"value": "with%20case"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Option",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProducts/DeleteOption?id=6&name=testTv",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProducts",
+								"DeleteOption"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6"
+								},
+								{
+									"key": "name",
+									"value": "testTv"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ControllerOrder",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOrder/All",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOrder",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOrder/FindById?idOrder=1\n",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOrder",
+								"FindById"
+							],
+							"query": [
+								{
+									"key": "idOrder",
+									"value": "1\n"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ControllerOrderDetail",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOrderDetailDetails/All",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOrderDetailDetails",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOrderDetailDetails/FindById?idOrderDetail=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOrderDetailDetails",
+								"FindById"
+							],
+							"query": [
+								{
+									"key": "idOrderDetail",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ControllerOption",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOption/All",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOption",
+								"All"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOption/FindById?id=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOption",
+								"FindById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FinadByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOption/FindByName?name=test",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOption",
+								"FindByName"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Option",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"test2\",\r\n  \"price\": 20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOption/CreateOption",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOption",
+								"CreateOption"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Option",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"price\": 456\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOption/UpdateOption?id=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOption",
+								"UpdateOption"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Option",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerOption/DeleteOption?id=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerOption",
+								"DeleteOption"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ControllerProductOption",
+			"item": [
+				{
+					"name": "All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProductOption/All\n",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProductOption",
+								"All\n"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7263/api/v1/ControllerProductOption/FindById?id=1\n",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7263",
+							"path": [
+								"api",
+								"v1",
+								"ControllerProductOption",
+								"FindById"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1\n"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

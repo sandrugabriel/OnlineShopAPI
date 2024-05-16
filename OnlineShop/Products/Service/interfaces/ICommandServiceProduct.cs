@@ -11,5 +11,10 @@ namespace OnlineShop.Products.Service.interfaces
 
         Task<DtoProductView> Delete(int id);
 
+
+        Task<DtoProductView> AddOption(int id, string name);
+
+        Task<DtoProductView> DeleteOption(int id, string name);
+
     }
 }

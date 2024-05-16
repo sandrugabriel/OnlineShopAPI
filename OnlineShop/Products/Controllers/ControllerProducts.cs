@@ -54,7 +54,7 @@ namespace OnlineShop.Products.Controllers
 
             try
             {
-                var product = await _queryService.GetById(id);
+                var product = await _queryService.GetByIdAsync(id);
                 return Ok(product);
             }
             catch (ItemDoesNotExist ex)
@@ -107,6 +107,30 @@ namespace OnlineShop.Products.Controllers
             }
         }
 
+        public override async Task<ActionResult<DtoProductView>> AddOption([FromQuery] int id, [FromQuery] string name)
+        {
+            try
+            {
+                var product = await _commandService.AddOption(id,name);
+                return Ok(product);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
+        public override async Task<ActionResult<DtoProductView>> DeleteOption([FromQuery] int id, [FromQuery] string name)
+        {
+            try
+            {
+                var product = await _commandService.DeleteOption(id,name);
+                return Ok(product);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

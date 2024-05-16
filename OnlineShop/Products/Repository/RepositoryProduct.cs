@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
+using OnlineShop.Options.Models;
+using OnlineShop.ProductOptions.Model;
 using OnlineShop.Products.Dto;
 using OnlineShop.Products.Models;
 using OnlineShop.Products.Repository.interfaces;
@@ -34,6 +36,10 @@ namespace OnlineShop.Products.Repository
                 dtoProductView.Create_date = product.Create_date;
                 dtoProductView.Category = product.Category;
                 dtoProductView.Stock = product.Stock;
+
+                List<Option> options = await _context.Options.Where(s=>s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+                dtoProductView.ProductOptions = options;
 
                 productViews.Add(dtoProductView);
             }
@@ -77,13 +83,17 @@ namespace OnlineShop.Products.Repository
             dtoProductView.Category = product.Category;
             dtoProductView.Stock = product.Stock;
 
+            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = options;
+
 
             return dtoProductView;
         }
 
         public async Task<DtoProductView> GetByNameAsync(string name)
         {
-            List<Product> products = await _context.Products.ToListAsync();
+            List<Product> products = await _context.Products.Include(s=>s.ProductOptions).ToListAsync();
 
 
             var product = (Product)null;
@@ -104,13 +114,16 @@ namespace OnlineShop.Products.Repository
             dtoProductView.Create_date = product.Create_date;
             dtoProductView.Category = product.Category;
             dtoProductView.Stock = product.Stock;
+            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = options;
 
             return dtoProductView;
         }
 
         public async Task<Product> GetByName(string name)
         {
-            List<Product> products = await _context.Products.ToListAsync();
+            List<Product> products = await _context.Products.Include(s => s.ProductOptions).ToListAsync();
 
             for (int i = 0; i < products.Count; i++)
             {
@@ -141,6 +154,9 @@ namespace OnlineShop.Products.Repository
             dtoProductView.Create_date = DateTime.Now;
             dtoProductView.Category = product.Category;
             dtoProductView.Stock = product.Stock;
+            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = options;
 
             return dtoProductView;
         }
@@ -165,6 +181,9 @@ namespace OnlineShop.Products.Repository
             dtoProductView.Create_date = product.Create_date;
             dtoProductView.Category = product.Category;
             dtoProductView.Stock = product.Stock;
+            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = options;
 
             return dtoProductView;
 
@@ -186,10 +205,86 @@ namespace OnlineShop.Products.Repository
             dtoProductView.Create_date = product.Create_date;
             dtoProductView.Category = product.Category;
             dtoProductView.Stock = product.Stock;
+            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = options;
 
             return dtoProductView;
         }
 
+        public async Task<DtoProductView> AddOption(int id, string name)
+        {
+            var product = await _context.Products.Include(s => s.OrderDetails).Include(s=>s.ProductOptions).FirstOrDefaultAsync(s=>s.Id==id);
+            List<ProductOption> productOptions = product.ProductOptions;
 
+            List<Option> options = await _context.Options.Include(s=>s.ProductOption).ToListAsync();
+
+            foreach(var option in options)
+            {
+                if(option.ProductOption != null)
+                if (option.Name == name && option.ProductOption.IdProduct == id) return null; 
+            }
+
+            Option productoption = options.FirstOrDefault(s => s.Name == name);
+
+            if (productoption == null) return null;
+
+            ProductOption finalOption = new ProductOption();
+            finalOption.Product = product;
+            finalOption.Option = productoption;
+            finalOption.IdOption = productoption.Id;
+            finalOption.IdProduct = product.Id;
+
+             _context.ProductOptions.Add(finalOption);
+
+            await _context.SaveChangesAsync();
+
+
+            DtoProductView dtoProductView = new DtoProductView();
+            dtoProductView.Id = product.Id;
+            dtoProductView.Name = product.Name;
+            dtoProductView.Price = product.Price;
+            dtoProductView.Create_date = product.Create_date;
+            dtoProductView.Category = product.Category;
+            dtoProductView.Stock = product.Stock;
+            List<Option> ops = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = ops;
+
+            return dtoProductView;
+        }
+
+        public async Task<DtoProductView> DeleteOption(int id, string name)
+        {
+            var product = await _context.Products.Include(s => s.OrderDetails).Include(s => s.ProductOptions).FirstOrDefaultAsync(s => s.Id == id);
+            List<ProductOption> productOptions = product.ProductOptions;
+            if (productOptions == null) return null;
+            var options = await _context.Options.Include(s => s.ProductOption).ToListAsync();
+
+            var option = options.FirstOrDefault(s => s.ProductOption != null & s.Name == name && s.ProductOption.IdProduct == id);
+
+            if (option == null)
+            {
+                return null;
+            }
+
+            
+            _context.ProductOptions.Remove(option.ProductOption);
+
+            await _context.SaveChangesAsync();
+
+            DtoProductView dtoProductView = new DtoProductView();
+            dtoProductView.Id = product.Id;
+            dtoProductView.Name = product.Name;
+            dtoProductView.Price = product.Price;
+            dtoProductView.Create_date = product.Create_date;
+            dtoProductView.Category = product.Category;
+            dtoProductView.Stock = product.Stock;
+            List<Option> ops = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
+
+            dtoProductView.ProductOptions = ops;
+
+            return dtoProductView;
+        }
     }
 }

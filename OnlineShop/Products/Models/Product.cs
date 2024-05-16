@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineShop.OrderDetails.Models;
+using OnlineShop.ProductOptions.Model;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineShop.Products.Models
@@ -21,16 +23,20 @@ namespace OnlineShop.Products.Models
         public string Name { get; set; }
 
         [Required]
-        public int Price {  get; set; }
+        public int Price { get; set; }
 
         [Required]
-        public string Category {  get; set; }
+        public string Category { get; set; }
 
         [Required]
         public DateTime Create_date { get; set; }
 
         [Required]
         public int Stock { get; set; }
+
+        public virtual List<OrderDetail> OrderDetails { get; set; }
+
+        public virtual List<ProductOption> ProductOptions { get; set; }
 
     }
 }

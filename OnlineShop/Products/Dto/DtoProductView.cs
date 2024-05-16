@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineShop.Options.Models;
+using OnlineShop.ProductOptions.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineShop.Products.Dto
 {
@@ -15,5 +17,7 @@ namespace OnlineShop.Products.Dto
         public DateTime Create_date { get; set; }
 
         public int Stock { get; set; }
+
+        public List<Option> ProductOptions { get; set; }
     }
 }

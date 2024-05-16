@@ -22,6 +22,10 @@ namespace OnlineShop.Products.Repository.interfaces
 
         Task<DtoProductView> DeleteById(int id);
 
+        Task<DtoProductView> AddOption(int id, string name);
+
+        Task<DtoProductView> DeleteOption(int id, string name);
+
 
     }
 }
