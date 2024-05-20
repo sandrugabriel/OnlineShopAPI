@@ -55,6 +55,11 @@ namespace OnlineShop.Customers.Controllers.interfaces
         [ProducesResponseType(statusCode: 404, type: typeof(string))]
         public abstract Task<ActionResult<DtoCustomerView>> DeleteProductToOrder([FromQuery] int id, [FromQuery] string name, [FromQuery]string option);
 
+        [HttpPost("SaveOrder")]
+        [ProducesResponseType(statusCode: 201, type: typeof(SendOrderView))]
+        [ProducesResponseType(statusCode: 400, type: typeof(string))]
+        public abstract Task<ActionResult<SendOrderView>> SaveOrder([FromBody] SendOrderRequest sendOrderRequest);
+
 
     }
 }

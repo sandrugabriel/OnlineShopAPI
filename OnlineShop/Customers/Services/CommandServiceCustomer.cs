@@ -3,6 +3,10 @@ using OnlineShop.Customers.Models;
 using OnlineShop.Customers.Repository.interfaces;
 using OnlineShop.Customers.Services.interfaces;
 using OnlineShop.OrderDetails.Models;
+using OnlineShop.OrderDetails.Repository.interfaces;
+using OnlineShop.Orders.Repository.interfaces;
+using OnlineShop.Products.Models;
+using OnlineShop.Products.Repository.interfaces;
 using OnlineShop.System.Constants;
 using OnlineShop.System.Exceptions;
 using System.Data.Entity.ModelConfiguration.Configuration;
@@ -12,10 +16,16 @@ namespace OnlineShop.Customers.Services
     public class CommandServiceCustomer : ICommandServiceCustomer
     {
         IRepositoryCustomer _repo;
+        IRepositoryOrder _repoOrder;
+        IRepositoryProduct _repoProduct;
+        IRepositoryOrderDetail _repoOrderDetail;
 
-        public CommandServiceCustomer(IRepositoryCustomer repo)
+        public CommandServiceCustomer(IRepositoryCustomer repo,IRepositoryOrder repositoryOrder,IRepositoryProduct product,IRepositoryOrderDetail orderDetail)
         {
             _repo = repo;
+            _repoOrder = repositoryOrder;
+            _repoProduct = product;
+            _repoOrderDetail = orderDetail;
         }
 
         public async Task<DtoCustomerView> CreateCustomer(CreateRequestCustomer createRequest)
@@ -101,6 +111,67 @@ namespace OnlineShop.Customers.Services
 
             return customer;
 
+        }
+
+
+        public async Task<SendOrderView> SaveOrder(SendOrderRequest orderRequest)
+        {
+
+            SendOrderView sendOrderView = new SendOrderView();
+           Order order = new Order();
+            order.CustomerId = orderRequest.CustomerId;
+
+            var customer = await _repo.GetById(orderRequest.CustomerId);
+
+            if(customer == null)
+            {
+                throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+            }
+            
+            order.Customer = customer;
+            order.OrderDate = DateTime.Now;
+            order.OrderAddress = customer.Address;
+
+            List<OrderDetail> orderDetails = new List<OrderDetail>();
+
+            List<ProductSendOrderView> productSendOrderViews = new List<ProductSendOrderView>();
+
+            foreach (ProductSendOrder dtoProduct in orderRequest.Products)
+            {
+                ProductSendOrderView productSendOrderView = new ProductSendOrderView();
+                var product = await _repoProduct.GetByName(dtoProduct.NameProduct);
+
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.Product = product;
+                orderDetail.ProductId = product.Id;
+                orderDetail.Order = order;
+                orderDetail.OrderId = order.Id;
+                orderDetail.Price = product.Price * dtoProduct.Quantity;
+                orderDetail.Quantity = dtoProduct.Quantity;
+
+                orderDetails.Add(orderDetail);
+                order.Ammount += orderDetail.Price;
+                productSendOrderView.Price = product.Price;
+                productSendOrderView.Quantity = dtoProduct.Quantity;
+                productSendOrderView.NameProduct = product.Name;
+                productSendOrderViews.Add(productSendOrderView);
+
+
+
+            }
+            order.OrderDetails = orderDetails;
+            order.Status = "close";
+            _repoOrder.SaveOrder(order);
+       
+
+           
+
+            sendOrderView.TotalPrice = order.Ammount;
+
+            sendOrderView.CustomerId = orderRequest.CustomerId;
+            sendOrderView.Products = productSendOrderViews;
+
+            return sendOrderView;
         }
     }
 }

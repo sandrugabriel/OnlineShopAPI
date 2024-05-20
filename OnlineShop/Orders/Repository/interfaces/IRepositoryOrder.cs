@@ -12,6 +12,8 @@ namespace OnlineShop.Orders.Repository.interfaces
 
         Task<Order> GetById(int id);
 
+        void SaveOrder(Order order);
+
 
     }
 }

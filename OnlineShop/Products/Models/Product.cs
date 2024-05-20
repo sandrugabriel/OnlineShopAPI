@@ -38,5 +38,6 @@ namespace OnlineShop.Products.Models
 
         public virtual List<ProductOption> ProductOptions { get; set; }
 
+        
     }
 }

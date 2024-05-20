@@ -52,19 +52,39 @@ namespace OnlineShop.Data.Migrations
                 .WithColumn("IdProduct").AsInt32().NotNullable()
                 .WithColumn("IdOption").AsInt32().NotNullable();
 
-            /*   public int Id { get; set; }
+            /*   
+        public int Id { get; set; }
 
         [Required]
+        public string CustomerAddress { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public int CustomerId { get; set; }
+
+        [JsonIgnore]
+        public virtual Customer Customer { get; set; }
+
+        [ForeignKey("OrderId")]
         public int OrderId { get; set; }
 
-        [Required]
-        public int ProductId { get; set; }
+        [JsonIgnore]
+        public virtual Order Order { get; set; }
 
         [Required]
-        public double Price { get; set; }
+        public DateTime DateSendOrder { get; set; }
 
         [Required]
-        public int Quantity { get; set; }*/
+        public bool CardPayment { get; set; }
+
+        [Required]
+        public string? NumberCard {  get; set; }
+
+        [Required]
+        public int? CvvNumber { get; set; }
+
+        [Required]
+        public string? DateExpirated { get; set; }
+*/
 
         }
 

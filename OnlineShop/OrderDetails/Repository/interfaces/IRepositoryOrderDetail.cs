@@ -11,5 +11,7 @@ namespace OnlineShop.OrderDetails.Repository.interfaces
 
         Task<OrderDetail> GetById(int id);
 
+        void SaveOrderDetails(List<OrderDetail> orderDetail);
+
     }
 }

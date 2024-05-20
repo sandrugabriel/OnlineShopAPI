@@ -4,7 +4,6 @@ using OnlineShop.Options.Models;
 using OnlineShop.OrderDetails.Models;
 using OnlineShop.ProductOptions.Model;
 using OnlineShop.Products.Models;
-
 namespace OnlineShop.Data
 {
     public class AppDbContext : DbContext
