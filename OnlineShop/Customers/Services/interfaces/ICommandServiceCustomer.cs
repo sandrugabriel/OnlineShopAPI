@@ -17,6 +17,7 @@ namespace OnlineShop.Customers.Services.interfaces
 
         Task<DtoCustomerView> DeleteProductToOrder(int idCurtomer, string name, string option);
 
+        Task<SendOrderView> SaveOrder(SendOrderRequest orderRequest);
     }
 }
 

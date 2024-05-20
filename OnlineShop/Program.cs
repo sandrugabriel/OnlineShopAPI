@@ -57,6 +57,7 @@ builder.Services.AddScoped<IRepositoryOption, RepositoryOption>();
 builder.Services.AddScoped<IQueryServiceOption, QueryServiceOption>();
 builder.Services.AddScoped<ICommandServiceOption, CommandServiceOption>();
 
+
 builder.Services.AddDbContext<AppDbContext>(op => op.UseMySql(builder.Configuration.GetConnectionString("Default")!,
     new MySqlServerVersion(new Version(8, 0, 21))));
 

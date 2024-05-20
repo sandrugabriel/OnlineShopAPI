@@ -1,10 +1,13 @@
 ﻿using OnlineShop.Customers.Dto;
+using OnlineShop.Customers.Models;
 
 namespace OnlineShop.Customers.Repository.interfaces
 {
     public interface IRepositoryCustomer
     {
         Task<List<DtoCustomerView>> GetAllAsync();
+
+        Task<Customer> GetById(int id);
 
         Task<DtoCustomerView> GetByIdAsync(int id);
 
@@ -21,7 +24,6 @@ namespace OnlineShop.Customers.Repository.interfaces
         Task<DtoCustomerView> AddProductToOrder(int idCurtomer, string name, string option, int quantity);
         Task<DtoCustomerView> DeleteOrder(int idCustomer, int idOrder);
         Task<DtoCustomerView> DeleteProductToOrder(int idCurtomer, string name, string option);
-
 
     }
 }

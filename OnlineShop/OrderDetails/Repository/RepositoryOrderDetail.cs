@@ -29,16 +29,10 @@ namespace OnlineShop.OrderDetailDetails.Repository
 
             foreach (OrderDetail orderDetail in orderDetails)
             {
-                DtoOrderDetailView dtoOrderView = new DtoOrderDetailView();
-                dtoOrderView.Id = orderDetail.Id;
-                dtoOrderView.Price = orderDetail.Price;
-                dtoOrderView.Quantity = orderDetail.Quantity;
-                DtoProductViewForOrder dtoProductView = new DtoProductViewForOrder();
+                DtoOrderDetailView dtoOrderView = _mapper.Map<DtoOrderDetailView>(orderDetail);
+
                 Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                dtoProductView.Id = product.Id;
-                dtoProductView.Price = product.Price;
-                dtoProductView.Name = product.Name;
-                dtoProductView.Category = product.Category;
+                DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
 
                 dtoOrderView.Product = dtoProductView;
 
@@ -63,14 +57,10 @@ namespace OnlineShop.OrderDetailDetails.Repository
             if (orderDetail == null) return null;
 
 
-            DtoOrderDetailView dtoOrderView = new DtoOrderDetailView();
-            dtoOrderView.Price = orderDetail.Price;
-            dtoOrderView.Quantity = orderDetail.Quantity;
-            DtoProductViewForOrder dtoProductView = new DtoProductViewForOrder();
+            DtoOrderDetailView dtoOrderView = _mapper.Map<DtoOrderDetailView>(orderDetail);
+
             Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-            dtoProductView.Price = product.Price;
-            dtoProductView.Name = product.Name;
-            dtoProductView.Category = product.Category;
+            DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
 
 
             dtoOrderView.Product = dtoProductView;
@@ -91,6 +81,12 @@ namespace OnlineShop.OrderDetailDetails.Repository
 
         
             return null;
+        }
+
+        public async void SaveOrderDetails(List<OrderDetail> orderDetail)
+        {
+            _context.OrderDetails.AddRange(orderDetail);
+             await _context.SaveChangesAsync();
         }
     }
 }

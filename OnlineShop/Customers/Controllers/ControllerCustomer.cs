@@ -145,5 +145,18 @@ namespace OnlineShop.Customers.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        public override async Task<ActionResult<SendOrderView>> SaveOrder([FromBody] SendOrderRequest sendOrderRequest)
+        {
+            try
+            {
+                var sendOrder = await _commandServiceCustomer.SaveOrder(sendOrderRequest);
+                return Ok(sendOrder);
+            }
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

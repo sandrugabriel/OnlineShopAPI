@@ -9,6 +9,7 @@ namespace OnlineShop.Customers.Mappings
         public MappingProfileCustomer()
         {
             CreateMap<CreateRequestCustomer, Customer>();
+            CreateMap<Customer, DtoCustomerView>();
         }
     }
 }

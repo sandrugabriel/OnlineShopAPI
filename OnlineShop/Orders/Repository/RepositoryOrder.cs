@@ -30,28 +30,16 @@ namespace OnlineShop.Orders.Repository
 
             foreach (Order order in orders)
             {
-                DtoOrderView dtoOrderView = new DtoOrderView();
-                dtoOrderView.Id = order.Id;
-                dtoOrderView.Ammount = order.Ammount;
-                dtoOrderView.OrderDate = order.OrderDate;
-                dtoOrderView.OrderAddress = order.OrderAddress;
-                dtoOrderView.Status = order.Status;
+                DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
 
                 List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
 
                 foreach (OrderDetail orderDetail in order.OrderDetails)
                 {
-                    DtoOrderDetailView dto = new DtoOrderDetailView();
+                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
 
-                    dto.Id = orderDetail.Id;
-                    dto.Price = orderDetail.Price;
-                    dto.Quantity = orderDetail.Quantity;
-                    DtoProductViewForOrder dtoProductView = new DtoProductViewForOrder();
                     Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                    dtoProductView.Id = product.Id;
-                    dtoProductView.Price = product.Price;
-                    dtoProductView.Name = product.Name;
-                    dtoProductView.Category = product.Category;
+                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
 
 
                     dto.Product = dtoProductView;
@@ -92,28 +80,16 @@ namespace OnlineShop.Orders.Repository
 
             if (order == null) return null;
 
-            DtoOrderView dtoOrderView = new DtoOrderView();
-            dtoOrderView.Id = order.Id;
-            dtoOrderView.Ammount = order.Ammount;
-            dtoOrderView.OrderDate = order.OrderDate;
-            dtoOrderView.OrderAddress = order.OrderAddress;
-            dtoOrderView.Status = order.Status;
+            DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
 
             List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
 
             foreach (OrderDetail orderDetail in order.OrderDetails)
             {
-                DtoOrderDetailView dto = new DtoOrderDetailView();
+                DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
 
-                dto.Id = orderDetail.Id;
-                dto.Price = orderDetail.Price;
-                dto.Quantity = orderDetail.Quantity;
-                DtoProductViewForOrder dtoProductView = new DtoProductViewForOrder();
                 Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                dtoProductView.Id = product.Id;
-                dtoProductView.Price = product.Price;
-                dtoProductView.Name = product.Name;
-                dtoProductView.Category = product.Category;
+                DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
 
 
                 dto.Product = dtoProductView;
@@ -125,6 +101,12 @@ namespace OnlineShop.Orders.Repository
 
 
             return dtoOrderView;
+        }
+
+        public async void SaveOrder(Order order)
+        {
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
         }
     }
 }

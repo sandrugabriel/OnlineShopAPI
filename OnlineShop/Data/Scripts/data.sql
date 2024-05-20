@@ -31,3 +31,15 @@ INSERT INTO productoptions VALUES (4,1,4);
 INSERT INTO productoptions VALUES (5,2,1);
 INSERT INTO productoptions VALUES (6,2,6);
 INSERT INTO productoptions VALUES (7,3,5);
+
+/*
+            Create.Table("sendorders")
+                .WithColumn("Id").AsInt32().PrimaryKey().Identity()
+                .WithColumn("CustomerId").AsInt32().NotNullable()
+                .WithColumn("OrderId").AsInt32().NotNullable()
+                .WithColumn("DateSendOrder").AsDateTime().NotNullable()
+                .WithColumn("CardPayment").AsBoolean().NotNullable()
+                .WithColumn("NumberCard").AsString().Nullable()
+                .WithColumn("CvvNumber").AsInt32().Nullable()
+                .WithColumn("DateExpirated").AsDate().Nullable();
+*/

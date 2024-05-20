@@ -8,6 +8,7 @@ namespace OnlineShop.OrderDetails.Mappings
     {
         public MappingProfileOrderDetail() {
             CreateMap<CreateRequestOrderDetail, OrderDetail>();
+            CreateMap<OrderDetail, DtoOrderDetailView>();
         }
     }
 }

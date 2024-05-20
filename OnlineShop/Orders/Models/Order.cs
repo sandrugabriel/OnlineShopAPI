@@ -34,6 +34,5 @@ namespace OnlineShop.OrderDetails.Models
 
         public virtual List<OrderDetail> OrderDetails { get; set; }
 
-
     }
 }

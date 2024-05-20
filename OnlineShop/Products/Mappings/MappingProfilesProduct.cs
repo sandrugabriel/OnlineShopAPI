@@ -10,6 +10,8 @@ namespace OnlineShop.Products.Mappings
         public MappingProfilesProduct() {
 
             CreateMap<CreateRequestProduct, Product>();
+            CreateMap<Product, DtoProductView>();
+            CreateMap<Product, DtoProductViewForOrder>();
         }
     }
 }
