@@ -8,7 +8,7 @@ namespace OnlineShop.Orders.Mappings
     {
         public MappingProfileOrder() {
             CreateMap<CreateRequestOrder, Order>();
-            CreateMap<Order, DtoOrderView>();
+            CreateMap<Order, DtoOrderView>().ForMember(s => s.Products, op => op.MapFrom(sr => sr.OrderDetails));
         }
     }
 }

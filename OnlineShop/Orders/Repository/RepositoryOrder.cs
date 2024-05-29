@@ -7,6 +7,7 @@ using OnlineShop.Orders.Dto;
 using OnlineShop.Orders.Repository.interfaces;
 using OnlineShop.Products.Dto;
 using OnlineShop.Products.Models;
+using System.Data;
 
 namespace OnlineShop.Orders.Repository
 {
@@ -24,88 +25,28 @@ namespace OnlineShop.Orders.Repository
 
         public async Task<List<DtoOrderView>> GetAllAsync()
         {
-            List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).ToListAsync();
+            var orders = await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
 
-            List<DtoOrderView> orderViews = new List<DtoOrderView>();
-
-            foreach (Order order in orders)
-            {
-                DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail orderDetail in order.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
-
-                    Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-
-
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView.Products = dtoODetailViews;
-
-                orderViews.Add(dtoOrderView);
-            }
-
-            return orderViews;
+            return _mapper.Map<List<DtoOrderView>>(orders);
         }
 
         public async Task<Order> GetById(int id)
         {
-            List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).ToListAsync();
+            // List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).ToListAsync();
 
-            foreach (Order order in orders)
-            {
-                if(order.Id == id) return order;
-            }
-
-            return null;
+            return await _context.Orders.Include(s => s.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<DtoOrderView> GetByIdAsync(int id)
         {
+            var order = await _context.Orders.Include(s => s.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
+            return _mapper.Map<DtoOrderView>(order);
 
-            List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).ToListAsync();
-
-            var order = (Order)null;
-            foreach (Order order1 in orders)
-            {
-                if (order1.Id == id) order = order1;
-            }
-
-            if (order == null) return null;
-
-            DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
-
-            List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-            foreach (OrderDetail orderDetail in order.OrderDetails)
-            {
-                DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
-
-                Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-
-
-                dto.Product = dtoProductView;
-
-                dtoODetailViews.Add(dto);
-            }
-
-            dtoOrderView.Products = dtoODetailViews;
-
-
-            return dtoOrderView;
         }
 
-        public async void SaveOrder(Order order)
+        public async Task SaveOrder(Order order)
         {
-            _context.Orders.Add(order);
+              _context.Orders.Add(order);
             await _context.SaveChangesAsync();
         }
     }

@@ -59,7 +59,7 @@ builder.Services.AddScoped<ICommandServiceOption, CommandServiceOption>();
 
 
 builder.Services.AddDbContext<AppDbContext>(op => op.UseMySql(builder.Configuration.GetConnectionString("Default")!,
-    new MySqlServerVersion(new Version(8, 0, 21))));
+    new MySqlServerVersion(new Version(8, 0, 21))),ServiceLifetime.Scoped);
 
 builder.Services.AddFluentMigratorCore()
     .ConfigureRunner(rb => rb.AddMySql5().WithGlobalConnectionString(builder.Configuration.GetConnectionString("Default"))

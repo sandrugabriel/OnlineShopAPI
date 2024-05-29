@@ -23,98 +23,31 @@ namespace OnlineShop.Products.Repository
         {
             List<Product> products = await _context.Products.ToListAsync();
 
-            List<DtoProductView> productViews = new List<DtoProductView>();
-
-            foreach (var product in products)
-            {
-                DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-
-                List<Option> options = await _context.Options.Where(s=>s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-                dtoProductView.ProductOptions = options;
-
-                productViews.Add(dtoProductView);
-            }
-
-            return productViews;
+            return _mapper.Map<List<DtoProductView>>(products);
         }
         public async Task<Product> GetById(int id)
         {
-            List<Product> products = await _context.Products.ToListAsync();
-
-            for (int i = 0; i < products.Count; i++)
-            {
-                if (products[i].Id == id)
-                {
-                    return products[i];
-                }
-            }
-            return null;
+            return await _context.Products.FirstOrDefaultAsync(s=>s.Id == id);
         }
         public async Task<DtoProductView> GetByIdAsync(int id)
         {
-            List<Product> products = await _context.Products.ToListAsync();
-
-            var product = (Product)null;
-            for (int i = 0; i < products.Count; i++)
-            {
-                if (products[i].Id == id)
-                {
-                    product = products[i];
-                    break;
-                }
-            }
-
-            if (product == null) return null;
-
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-
-            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = options;
+            var product = await _context.Products.FirstOrDefaultAsync(s=>s.Id == id);
 
 
-            return dtoProductView;
+            return _mapper.Map<DtoProductView>(product);
         }
 
         public async Task<DtoProductView> GetByNameAsync(string name)
         {
-            List<Product> products = await _context.Products.Include(s=>s.ProductOptions).ToListAsync();
+            var product = await _context.Products.FirstOrDefaultAsync(s => s.Name == name);
 
 
-            var product = (Product)null;
-            for (int i = 0; i < products.Count; i++)
-            {
-                if (products[i].Name.Equals(name))
-                {
-                    product = products[i];
-                    break;
-                }
-            }
-            if (product == null) return null;
-
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = options;
-
-            return dtoProductView;
+            return _mapper.Map<DtoProductView>(product);
         }
 
         public async Task<Product> GetByName(string name)
         {
-            List<Product> products = await _context.Products.Include(s => s.ProductOptions).ToListAsync();
-
-            for (int i = 0; i < products.Count; i++)
-            {
-                if (products[i].Name.Equals(name))
-                {
-                    return products[i];
-                    break;
-                }
-            }
-
-            return null;
+            return await _context.Products.FirstOrDefaultAsync(s => s.Name == name);
         }
         public async Task<DtoProductView> Create(CreateRequestProduct request)
         {
@@ -125,12 +58,7 @@ namespace OnlineShop.Products.Repository
             await _context.SaveChangesAsync();
 
             product.Create_date = DateTime.Now;
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = options;
-
-            return dtoProductView;
+            return _mapper.Map<DtoProductView>(product);
         }
         public async Task<DtoProductView> UpdateAsync(int id, UpdateRequestProduct request)
         {
@@ -145,12 +73,7 @@ namespace OnlineShop.Products.Repository
             _context.Update(product);
             await _context.SaveChangesAsync();
 
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = options;
-
-            return dtoProductView;
+           return _mapper.Map<DtoProductView>(product);
 
         }
         public async Task<DtoProductView> DeleteById(int id)
@@ -162,13 +85,7 @@ namespace OnlineShop.Products.Repository
             await _context.SaveChangesAsync();
 
 
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-
-            List<Option> options = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = options;
-
-            return dtoProductView;
+            return _mapper.Map<DtoProductView>(product);
         }
         public async Task<DtoProductView> AddOption(int id, string name)
         {
@@ -198,12 +115,7 @@ namespace OnlineShop.Products.Repository
             await _context.SaveChangesAsync();
 
 
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-            List<Option> ops = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = ops;
-
-            return dtoProductView;
+           return _mapper.Map<DtoProductView>(product);
         }
 
         public async Task<DtoProductView> DeleteOption(int id, string name)
@@ -225,12 +137,7 @@ namespace OnlineShop.Products.Repository
 
             await _context.SaveChangesAsync();
 
-            DtoProductView dtoProductView = _mapper.Map<DtoProductView>(product);
-            List<Option> ops = await _context.Options.Where(s => s.ProductOption.IdProduct == product.Id).ToListAsync();
-
-            dtoProductView.ProductOptions = ops;
-
-            return dtoProductView;
+            return _mapper.Map<DtoProductView>(product);
         }
     }
 }

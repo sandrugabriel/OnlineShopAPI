@@ -26,14 +26,7 @@ namespace OnlineShop.ProductOptions.Repository
 
         public async Task<ProductOption> GetByIdAsync(int id)
         {
-            List<ProductOption> productProductOptions = await _context.ProductOptions.ToListAsync();
-
-            foreach (ProductOption productProductOption1 in productProductOptions)
-            {
-                if (productProductOption1.Id == id) return productProductOption1;
-            }
-
-            return null;
+            return _context.ProductOptions.FirstOrDefault(s=>s.Id == id);
         }
 
 
