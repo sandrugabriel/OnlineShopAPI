@@ -90,13 +90,20 @@ namespace OnlineShop.Customers.Services
 
         public async Task<DtoCustomerView> DeleteOrder(int idCustomer, int idOrder)
         {
-            var customer = await _repo.DeleteOrder(idCustomer,idOrder);
+            var customer = await _repo.GetByIdAsync(idCustomer);
 
             if (customer == null)
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
 
+            var order = await _repoOrder.GetById(idOrder);
+            if(order == null)
+            {
+                throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+            }
+
+            customer = await _repo.DeleteOrder(idCustomer, idOrder);
             return customer;
         }
 

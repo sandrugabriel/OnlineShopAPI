@@ -54,192 +54,42 @@ namespace OnlineShop.Customers.Repository
 
             await _context.SaveChangesAsync();
 
-            DtoCustomerView customerView = _mapper.Map<DtoCustomerView>(customer);
-            List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).Where(s => s.CustomerId == customer.Id).ToListAsync();
-
-            List<DtoOrderView> orderViews = new List<DtoOrderView>();
-
-            foreach (Order order in orders)
-            {
-
-                DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail orderDetail in order.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
-                    Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-                  //  dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s => s.Name == name);
-
-
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView.Products = dtoODetailViews;
-
-                orderViews.Add(dtoOrderView);
-            }
-
-
-            customerView.Orders = orderViews;
-
-
-            return customerView;
+          
+            return _mapper.Map<DtoCustomerView>(customer);
         }
 
 
         public async Task<List<DtoCustomerView>> GetAllAsync()
         {
-            List<Customer> customers = await _context.Customers.Include(s=>s.Orders).ToListAsync();
+            List<Customer> customers = await _context.Customers.Include(s=>s.Orders).
+                ThenInclude(s=>s.OrderDetails).ThenInclude(s=>s.Product).ToListAsync();
 
-            List<DtoCustomerView> customerViews = new List<DtoCustomerView>();
+            List<DtoCustomerView> dtoCustomerViews = _mapper.Map<List<DtoCustomerView>>(customers);
 
-            foreach (Customer customer in customers)
-            {
-                DtoCustomerView customerView = _mapper.Map<DtoCustomerView>(customer);
-                List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).Where(s=>s.CustomerId == customer.Id).ToListAsync();
-
-                List<DtoOrderView> orderViews = new List<DtoOrderView>();
-
-                foreach (Order order in orders)
-                {
-                    
-                    DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
-
-                    List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                    foreach (OrderDetail orderDetail in order.OrderDetails)
-                    {
-                        DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
-                        Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                        DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-                       // dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s => s.Name == name);
-
-
-                        dto.Product = dtoProductView;
-
-                        dtoODetailViews.Add(dto);
-                    }
-
-                    dtoOrderView.Products = dtoODetailViews;
-
-                    orderViews.Add(dtoOrderView);
-                }
-
-
-                customerView.Orders = orderViews;
-
-                customerViews.Add(customerView);
-            }
-
-            return customerViews;
+            return dtoCustomerViews;
         }
 
         public async Task<DtoCustomerView> GetByIdAsync(int id)
         {
-            List<Customer> customers = await _context.Customers.ToListAsync();
 
-            var customer = (Customer)null;
-            foreach (Customer customer1 in customers)
-            {
-                if(customer1.Id == id) customer = customer1;
-            }
+            var customer = await _context.Customers.Include(s => s.Orders).
+                ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s=>s.Id==id);
 
-            DtoCustomerView customerView = _mapper.Map<DtoCustomerView>(customer);
-            List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).Where(s => s.CustomerId == customer.Id).ToListAsync();
-
-            List<DtoOrderView> orderViews = new List<DtoOrderView>();
-
-            foreach (Order order in orders)
-            {
-
-                DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail orderDetail in order.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
-                    Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-
-                    //dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s => s.Name == name);
-
-
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView.Products = dtoODetailViews;
-
-                orderViews.Add(dtoOrderView);
-            }
-
-
-            customerView.Orders = orderViews;
-
-
-            return customerView;
+            return _mapper.Map<DtoCustomerView>(customer);
         }
 
         public async Task<DtoCustomerView> GetByNameAsync(string name)
         {
-            List<Customer> customers = await _context.Customers.ToListAsync();
+            var customer = await _context.Customers.Include(s => s.Orders).
+                 ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s => s.FullName == name);
 
-            var customer = (Customer)null;
-            foreach (Customer customer1 in customers)
-            {
-                if (customer1.FullName.Equals(name)) customer = customer1;
-            }
-
-            DtoCustomerView customerView = _mapper.Map<DtoCustomerView>(customer);
-            List<Order> orders = await _context.Orders.Include(s => s.OrderDetails).Where(s => s.CustomerId == customer.Id).ToListAsync();
-
-            List<DtoOrderView> orderViews = new List<DtoOrderView>();
-
-            foreach (Order order in orders)
-            {
-
-                DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(order);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail orderDetail in order.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(orderDetail);
-                    Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-                    dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s => s.Name == name);
-
-
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView.Products = dtoODetailViews;
-
-                orderViews.Add(dtoOrderView);
-            }
-
-
-            customerView.Orders = orderViews;
-
-
-            return customerView;
+            return _mapper.Map<DtoCustomerView>(customer);
         }
 
         public async Task<DtoCustomerView> UpdateCustomer(int id,UpdateRequestCustomer updateRequest)
         {
-           var customer = await _context.Customers.FindAsync(id);
-
-            if (customer == null) return null;
-
+            var customer = await _context.Customers.Include(s => s.Orders).
+               ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s => s.Id == id);
             customer.Address = updateRequest.Address ?? customer.Address;
             customer.PhoneNumber = updateRequest.PhoneNumber ?? customer.PhoneNumber;
             customer.FullName = updateRequest.FullName ?? customer.FullName;
@@ -286,10 +136,6 @@ namespace OnlineShop.Customers.Repository
 
             await _context.SaveChangesAsync();
 
-            DtoProductViewForOrder dtoProductViewForOrder = _mapper.Map<DtoProductViewForOrder>(product);
-
-
-
             Order finalOrder = null;
             if(order == null)
             {
@@ -317,24 +163,6 @@ namespace OnlineShop.Customers.Repository
             finalOrder.Ammount += orderDetail.Price;
             orderDetail.Order = finalOrder;
             orderDetail.OrderId = finalOrder.Id;
-          //  finalOrder.OrderDetails.Add(orderDetail);
-
-
-            DtoOrderView dtoOrderView = _mapper.Map<DtoOrderView>(orderDetail);
-
-            List<DtoOrderDetailView> dtoOrderDetailViews = new List<DtoOrderDetailView>();
-
-            foreach(var op in finalOrder.OrderDetails)
-            {
-                DtoOrderDetailView dtoOrderDetailView = _mapper.Map<DtoOrderDetailView>(op);
-                dtoOrderDetailView.Product = dtoProductViewForOrder;
-                dtoOrderDetailView.Quantity = quantity;
-                dtoOrderDetailView.Price = orderDetail.Price;
-
-                dtoOrderDetailViews.Add(dtoOrderDetailView);
-            }
-
-            dtoOrderView.Products = dtoOrderDetailViews;
 
             product.Stock -= quantity;
 
@@ -344,97 +172,30 @@ namespace OnlineShop.Customers.Repository
 
             await _context.SaveChangesAsync();
 
-          //  customer.Orders.Add(finalOrder);
 
-            await _context.SaveChangesAsync();
-
-            DtoCustomerView dtoCustomerView = _mapper.Map<DtoCustomerView>(customer);
-
-            List<DtoOrderView> views = new List<DtoOrderView>();
-
-            foreach (var op in customer.Orders)
-            {
-                DtoOrderView dtoOrderView1 = _mapper.Map<DtoOrderView>(op);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail od in op.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(od);
-
-                    Product p = await _context.Products.FindAsync(od.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-                    dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s=>s.Name == name);
-
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView1.Products = dtoODetailViews;
-
-
-                views.Add(dtoOrderView1);
-            }
-
-
-            dtoCustomerView.Orders = views;
-
-            return dtoCustomerView;
+            return _mapper.Map<DtoCustomerView>(customer);
         }
 
         public async Task<DtoCustomerView> DeleteOrder(int idCustomer, int idOrder)
         {
-            var customer = await _context.Customers.FindAsync(idCustomer);
+            var customer = await _context.Customers.Include(s => s.Orders).
+                 ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s => s.Id == idCustomer);
 
-            var order = _context.Orders.FirstOrDefault(s=>s.CustomerId == idCustomer && s.Status == "open");
+          
+            customer.Orders.Remove(customer.Orders.FirstOrDefault(or=>or.Id==idOrder));
 
-            if (order == null) return null;
-
-            _context.Orders.Remove(order);
-
+            _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
 
-            DtoCustomerView dtoCustomerView = _mapper.Map<DtoCustomerView>(customer);
-
-            List<DtoOrderView> views = new List<DtoOrderView>();
-
-            foreach (var op in customer.Orders)
-            {
-                DtoOrderView dtoOrderView1 = _mapper.Map<DtoOrderView>(op);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail od in op.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(od);
-                    Product p = await _context.Products.FindAsync(od.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(p);
-                   // dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s => s.Name == name);
-
-
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView1.Products = dtoODetailViews;
-
-
-                views.Add(dtoOrderView1);
-            }
-
-
-            dtoCustomerView.Orders = views;
-
-            return dtoCustomerView;
+            return _mapper.Map<DtoCustomerView>(customer);
         }
 
         public async Task<DtoCustomerView> DeleteProductToOrder(int idCurtomer, string name, string option)
         {
-            var customer = await _context.Customers.FindAsync(idCurtomer);
+            var customer = await _context.Customers.Include(s => s.Orders).
+                  ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s => s.Id == idCurtomer);
 
-            var order = _context.Orders.Include(s=>s.OrderDetails).FirstOrDefault(s => s.CustomerId == idCurtomer && s.Status == "open");
+            var order = _context.Orders.Include(s => s.OrderDetails).FirstOrDefault(s => s.CustomerId == idCurtomer && s.Status == "open");
 
             if (order == null) return null;
 
@@ -442,7 +203,7 @@ namespace OnlineShop.Customers.Repository
             Product product = null;
             foreach (var item in order.OrderDetails)
             {
-                if (_context.Products.FirstOrDefaultAsync(s=>s.Id == item.ProductId).Result.Name == name) { orderDetail = item; product = item.Product; }
+                if (_context.Products.FirstOrDefaultAsync(s => s.Id == item.ProductId).Result.Name == name) { orderDetail = item; product = item.Product; }
             }
 
             if (orderDetail == null) return null;
@@ -459,39 +220,9 @@ namespace OnlineShop.Customers.Repository
 
             await _context.SaveChangesAsync();
 
-            DtoCustomerView dtoCustomerView = _mapper.Map<DtoCustomerView>(customer);    
-
-            List<DtoOrderView> views = new List<DtoOrderView>();
-
-            foreach (var op in customer.Orders)
-            {
-                DtoOrderView dtoOrderView1 = _mapper.Map<DtoOrderView>(op);
-
-                List<DtoOrderDetailView> dtoODetailViews = new List<DtoOrderDetailView>();
-
-                foreach (OrderDetail od in op.OrderDetails)
-                {
-                    DtoOrderDetailView dto = _mapper.Map<DtoOrderDetailView>(od);
-                    Product p = await _context.Products.FindAsync(od.ProductId);
-                    DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(p);
-                    dtoProductView.Option = await _context.Options.FirstOrDefaultAsync(s => s.Name == name);
 
 
-                    dto.Product = dtoProductView;
-
-                    dtoODetailViews.Add(dto);
-                }
-
-                dtoOrderView1.Products = dtoODetailViews;
-
-
-                views.Add(dtoOrderView1);
-            }
-
-
-            dtoCustomerView.Orders = views;
-
-            return dtoCustomerView;
+            return _mapper.Map<DtoCustomerView>(customer);    
         }
 
         public async Task<Customer> GetById(int id)

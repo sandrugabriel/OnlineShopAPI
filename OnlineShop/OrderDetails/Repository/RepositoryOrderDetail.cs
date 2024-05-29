@@ -25,62 +25,20 @@ namespace OnlineShop.OrderDetailDetails.Repository
         {
             List<OrderDetail> orderDetails = await _context.OrderDetails.ToListAsync();
 
-            List<DtoOrderDetailView> orderDetailsViews = new List<DtoOrderDetailView>();
-
-            foreach (OrderDetail orderDetail in orderDetails)
-            {
-                DtoOrderDetailView dtoOrderView = _mapper.Map<DtoOrderDetailView>(orderDetail);
-
-                Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-                DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-
-                dtoOrderView.Product = dtoProductView;
-
-                orderDetailsViews.Add(dtoOrderView);
-            }
-
-            return orderDetailsViews;
+            return _mapper.Map<List<DtoOrderDetailView>>(orderDetails);
 
         }
 
         public async Task<DtoOrderDetailView> GetByIdAsync(int id)
         {
-
-            List<OrderDetail> orderDetails = await _context.OrderDetails.ToListAsync();
-
-            var orderDetail = (OrderDetail)null;
-            foreach (OrderDetail orderDetail1 in orderDetails)
-            {
-                if (orderDetail1.Id == id) orderDetail = orderDetail1;
-            }
-
-            if (orderDetail == null) return null;
-
-
-            DtoOrderDetailView dtoOrderView = _mapper.Map<DtoOrderDetailView>(orderDetail);
-
-            Product product = await _context.Products.FindAsync(orderDetail.ProductId);
-            DtoProductViewForOrder dtoProductView = _mapper.Map<DtoProductViewForOrder>(product);
-
-
-            dtoOrderView.Product = dtoProductView;
-
-
-            return dtoOrderView;
+            var orderDetail = await _context.OrderDetails.FirstOrDefaultAsync(s=>s.Id == id);
+            return _mapper.Map<DtoOrderDetailView>(orderDetail);
         }
 
         public async Task<OrderDetail> GetById(int id)
         {
+            return await _context.OrderDetails.FirstOrDefaultAsync(s => s.Id == id);
 
-            List<OrderDetail> orderDetails = await _context.OrderDetails.ToListAsync();
-
-            foreach (OrderDetail orderDetail1 in orderDetails)
-            {
-                if (orderDetail1.Id == id) return orderDetail1;
-            }
-
-        
-            return null;
         }
 
         public async void SaveOrderDetails(List<OrderDetail> orderDetail)

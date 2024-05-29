@@ -46,7 +46,6 @@ namespace OnlineShop.Options.Repository
             return option;
         }
 
-
         public async Task<List<Option>> GetAllAsync()
         {
             return await _context.Options.Include(s => s.ProductOption).ToListAsync();
@@ -55,26 +54,12 @@ namespace OnlineShop.Options.Repository
 
         public async Task<Option> GetByIdAsync(int id)
         {
-            List<Option> options = await _context.Options.Include(s => s.ProductOption).ToListAsync();
-
-            foreach (Option option1 in options)
-            {
-                if (option1.Id == id) return option1;
-            }
-
-            return null;
+            return await _context.Options.Include(s => s.ProductOption).FirstOrDefaultAsync(s=>s.Id == id);
         }
 
         public async Task<Option> GetByNameAsync(string name)
         {
-            List<Option> options = await _context.Options.Include(s=>s.ProductOption).ToListAsync();
-
-            foreach (Option option1 in options)
-            {
-                if (option1.Name.Equals(name)) return option1;
-            }
-
-            return null;
+            return await _context.Options.Include(s => s.ProductOption).FirstOrDefaultAsync(s => s.Name == name);
         }
 
         public async Task<Option> UpdateOption(int id, UpdateRequestOption updateRequest)

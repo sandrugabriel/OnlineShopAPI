@@ -8,7 +8,9 @@ namespace OnlineShop.OrderDetails.Mappings
     {
         public MappingProfileOrderDetail() {
             CreateMap<CreateRequestOrderDetail, OrderDetail>();
-            CreateMap<OrderDetail, DtoOrderDetailView>();
+            CreateMap<OrderDetail, DtoOrderDetailView>().ForMember(s => s.Product, opt => opt.MapFrom(sr => sr.Product));
+
+
         }
     }
 }
