@@ -1,4 +1,5 @@
-﻿using OnlineShop.Products.Dto;
+﻿using OnlineShop.Options.Models;
+using OnlineShop.Products.Dto;
 using OnlineShop.Products.Models;
 
 namespace OnlineShop.Products.Repository.interfaces
@@ -22,7 +23,7 @@ namespace OnlineShop.Products.Repository.interfaces
 
         Task<DtoProductView> DeleteById(int id);
 
-        Task<DtoProductView> AddOption(int id, string name);
+        Task<DtoProductView> AddOption(int id, Option option);
 
         Task<DtoProductView> DeleteOption(int id, string name);
 

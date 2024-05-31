@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
+using OnlineShop.Options.Dto;
 using OnlineShop.Options.Models;
 using OnlineShop.ProductOptions.Model;
 using OnlineShop.Products.Dto;
 using OnlineShop.Products.Models;
 using OnlineShop.Products.Repository.interfaces;
+using System.Data.Entity.ModelConfiguration.Configuration;
 
 namespace OnlineShop.Products.Repository
 {
@@ -23,7 +25,15 @@ namespace OnlineShop.Products.Repository
         {
             List<Product> products = await _context.Products.ToListAsync();
 
-            return _mapper.Map<List<DtoProductView>>(products);
+            var responce = _mapper.Map<List<DtoProductView>>(products);
+            int index = 0;
+            foreach (var product in products)
+            {
+                responce[index].Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+                index++;
+            }
+           
+            return responce;
         }
         public async Task<Product> GetById(int id)
         {
@@ -33,16 +43,18 @@ namespace OnlineShop.Products.Repository
         {
             var product = await _context.Products.FirstOrDefaultAsync(s=>s.Id == id);
 
-
-            return _mapper.Map<DtoProductView>(product);
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+            return responce;
         }
 
         public async Task<DtoProductView> GetByNameAsync(string name)
         {
             var product = await _context.Products.FirstOrDefaultAsync(s => s.Name == name);
 
-
-            return _mapper.Map<DtoProductView>(product);
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+            return responce;
         }
 
         public async Task<Product> GetByName(string name)
@@ -57,8 +69,10 @@ namespace OnlineShop.Products.Repository
 
             await _context.SaveChangesAsync();
 
-            product.Create_date = DateTime.Now;
-            return _mapper.Map<DtoProductView>(product);
+            product.Create_date = DateTime.Now; 
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+            return responce;
         }
         public async Task<DtoProductView> UpdateAsync(int id, UpdateRequestProduct request)
         {
@@ -70,11 +84,12 @@ namespace OnlineShop.Products.Repository
             product.Category = request.Category ?? product.Category;
             product.Stock = request.Stock ?? product.Stock;
 
-            _context.Update(product);
+            _context.Products.Update(product);
+
             await _context.SaveChangesAsync();
-
-           return _mapper.Map<DtoProductView>(product);
-
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+            return responce;
         }
         public async Task<DtoProductView> DeleteById(int id)
         {
@@ -85,59 +100,43 @@ namespace OnlineShop.Products.Repository
             await _context.SaveChangesAsync();
 
 
-            return _mapper.Map<DtoProductView>(product);
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+            return responce;
         }
-        public async Task<DtoProductView> AddOption(int id, string name)
+        public async Task<DtoProductView> AddOption(int id, Option option)
         {
-            var product = await _context.Products.Include(s => s.OrderDetails).Include(s=>s.ProductOptions).FirstOrDefaultAsync(s=>s.Id==id);
-            List<ProductOption> productOptions = product.ProductOptions;
-
-            List<Option> options = await _context.Options.Include(s=>s.ProductOption).ToListAsync();
-
-            foreach(var option in options)
-            {
-                if(option.ProductOption != null)
-                if (option.Name == name && option.ProductOption.IdProduct == id) return null; 
-            }
-
-            Option productoption = options.FirstOrDefault(s => s.Name == name);
-
-            if (productoption == null) return null;
-
-            ProductOption finalOption = new ProductOption();
-            finalOption.Product = product;
-            finalOption.Option = productoption;
-            finalOption.IdOption = productoption.Id;
-            finalOption.IdProduct = product.Id;
-
-             _context.ProductOptions.Add(finalOption);
+            Product product = await _context.Products.Include(s => s.OrderDetails).Include(s => s.ProductOptions).ThenInclude(s => s.Option).FirstOrDefaultAsync(s => s.Id == id);
+            ProductOption productOption = new ProductOption();
+            productOption.Option = option;
+            productOption.Product = product;
+            productOption.IdProduct = id;
+            productOption.IdOption = option.Id;
+        
+            product.ProductOptions.Add(productOption);
+            _context.Products.Update(product);
 
             await _context.SaveChangesAsync();
 
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
 
-           return _mapper.Map<DtoProductView>(product);
+           return responce;
         }
 
         public async Task<DtoProductView> DeleteOption(int id, string name)
         {
             var product = await _context.Products.Include(s => s.OrderDetails).Include(s => s.ProductOptions).FirstOrDefaultAsync(s => s.Id == id);
-            List<ProductOption> productOptions = product.ProductOptions;
-            if (productOptions == null) return null;
-            var options = await _context.Options.Include(s => s.ProductOption).ToListAsync();
 
-            var option = options.FirstOrDefault(s => s.ProductOption != null & s.Name == name && s.ProductOption.IdProduct == id);
+            product.ProductOptions.Remove(product.ProductOptions.FirstOrDefault(s => s.Option.Name == name));
 
-            if (option == null)
-            {
-                return null;
-            }
-
-            
-            _context.ProductOptions.Remove(option.ProductOption);
+            _context.Products.Update(product);
 
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<DtoProductView>(product);
+            var responce = _mapper.Map<DtoProductView>(product);
+            responce.Options = _mapper.Map<List<OptionResponse>>(product.ProductOptions);
+            return responce;
         }
     }
 }

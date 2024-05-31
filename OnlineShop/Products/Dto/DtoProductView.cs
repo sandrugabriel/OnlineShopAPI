@@ -1,4 +1,5 @@
-﻿using OnlineShop.Options.Models;
+﻿using OnlineShop.Options.Dto;
+using OnlineShop.Options.Models;
 using OnlineShop.ProductOptions.Model;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,6 +19,6 @@ namespace OnlineShop.Products.Dto
 
         public int Stock { get; set; }
 
-        public List<Option> ProductOptions { get; set; }
+        public List<OptionResponse> Options { get; set; }
     }
 }

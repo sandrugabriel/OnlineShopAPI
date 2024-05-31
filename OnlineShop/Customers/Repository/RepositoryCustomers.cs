@@ -8,6 +8,7 @@ using OnlineShop.Options.Models;
 using OnlineShop.OrderDetails.Dto;
 using OnlineShop.OrderDetails.Models;
 using OnlineShop.Orders.Dto;
+using OnlineShop.ProductOptions.Model;
 using OnlineShop.Products.Dto;
 using OnlineShop.Products.Models;
 using OnlineShop.System.Constants;
@@ -58,7 +59,6 @@ namespace OnlineShop.Customers.Repository
             return _mapper.Map<DtoCustomerView>(customer);
         }
 
-
         public async Task<List<DtoCustomerView>> GetAllAsync()
         {
             List<Customer> customers = await _context.Customers.Include(s=>s.Orders).
@@ -107,68 +107,53 @@ namespace OnlineShop.Customers.Repository
 
         public async Task<DtoCustomerView> AddProductToOrder(int idCurtomer, string name, string option,int quantity)
         {
-            var customer = await _context.Customers.FindAsync(idCurtomer);
+            var customer = await _context.Customers.Include(s => s.Orders).
+                ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s => s.Id == idCurtomer);
 
-                       var order = (Order)null;
+
+            var order = (Order)null;
             if(customer.Orders !=null)
             order = customer.Orders.FirstOrDefault(s=>s.Status == "open");
 
-            Product product = _context.Products.Include(s => s.OrderDetails).Include(s => s.ProductOptions).FirstOrDefault(s=>s.Name == name);
+            OrderDetail orderDetail = order.OrderDetails.FirstOrDefault(s=>s.Product.Name == name);
 
-            if (product == null) return null;
+            if (orderDetail == null) return null;
 
-            Option option1 = null;
-            foreach (var op in product.ProductOptions)
-            {
-                if (_context.Options.FirstOrDefault(s => s.Id == op.IdOption).Name == option) option1 = op.Option;
-            }
+            if (orderDetail.Product.Stock < quantity) throw new InvalidQuantity(Constants.InvalidQuantity);
 
-            if (option1 == null) return null;
+            ProductOption option1 = orderDetail.Product.ProductOptions.FirstOrDefault(s => s.Option.Name == option);
 
-            if (product.Stock < quantity) throw new InvalidQuantity(Constants.InvalidQuantity);
+            OrderDetail finalOrderDetail = new OrderDetail();
+            finalOrderDetail.Product = orderDetail.Product;
+            finalOrderDetail.ProductId = orderDetail.Product.Id;
+            finalOrderDetail.Quantity = quantity;
+            finalOrderDetail.Price = quantity * orderDetail.Product.Price + option1.Option.Price;
 
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.Product = product;
-            orderDetail.ProductId = product.Id;
-            orderDetail.Quantity = quantity;
-            orderDetail.Price = quantity * product.Price + option1.Price;
-            _context.OrderDetails.Add(orderDetail);
 
-            await _context.SaveChangesAsync();
-
-            Order finalOrder = null;
-            if(order == null)
-            {
-               finalOrder = new Order();
+            Order finalOrder = new Order();
                 finalOrder.Status = "open";
                 finalOrder.OrderDate = DateTime.Now;
                 finalOrder.OrderAddress = customer.Address;
                 finalOrder.Customer = customer;
                 finalOrder.CustomerId = customer.Id;
                 finalOrder.OrderDetails = new List<OrderDetail>();
-                _context.Orders.Add(finalOrder);
-                await _context.SaveChangesAsync();
-            }
-            else
+            if(order != null)
             {
+               order.OrderDetails.Add(finalOrderDetail);
                 finalOrder = order;
-                finalOrder.Id = order.Id;
                 finalOrder.OrderDate = DateTime.Now;
                 finalOrder.OrderAddress = customer.Address;
                 finalOrder.Customer = customer;
                 finalOrder.CustomerId = customer.Id;
-                finalOrder.OrderDetails = order.OrderDetails;
             }
 
             finalOrder.Ammount += orderDetail.Price;
             orderDetail.Order = finalOrder;
             orderDetail.OrderId = finalOrder.Id;
 
-            product.Stock -= quantity;
+           orderDetail.Product.Stock -= quantity;
 
-            _context.Products.Update(product);
-
-            _context.Orders.Update(finalOrder);
+            _context.Customers.Update(customer);
 
             await _context.SaveChangesAsync();
 
@@ -195,7 +180,7 @@ namespace OnlineShop.Customers.Repository
             var customer = await _context.Customers.Include(s => s.Orders).
                   ThenInclude(s => s.OrderDetails).ThenInclude(s => s.Product).FirstOrDefaultAsync(s => s.Id == idCurtomer);
 
-            var order = _context.Orders.Include(s => s.OrderDetails).FirstOrDefault(s => s.CustomerId == idCurtomer && s.Status == "open");
+            var order = customer.Orders.FirstOrDefault(s=>s.Status == "open");
 
             if (order == null) return null;
 
@@ -203,20 +188,16 @@ namespace OnlineShop.Customers.Repository
             Product product = null;
             foreach (var item in order.OrderDetails)
             {
-                if (_context.Products.FirstOrDefaultAsync(s => s.Id == item.ProductId).Result.Name == name) { orderDetail = item; product = item.Product; }
+                if (item.Product.Name == name) { orderDetail = item; product = item.Product; }
             }
-
-            if (orderDetail == null) return null;
 
             product.Stock += orderDetail.Quantity;
 
-            _context.Products.Update(product);
-
             order.Ammount -= orderDetail.Price;
 
-            _context.OrderDetails.Remove(orderDetail);
+            order.OrderDetails.Remove(orderDetail);
 
-            _context.Orders.Update(order);
+            _context.Customers.Update(customer);
 
             await _context.SaveChangesAsync();
 
