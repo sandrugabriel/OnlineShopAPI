@@ -1,4 +1,6 @@
 ﻿
+using OnlineShop.Options.Models;
+using OnlineShop.Options.Repository.interfaces;
 using OnlineShop.Products.Dto;
 using OnlineShop.Products.Models;
 using OnlineShop.Products.Repository.interfaces;
@@ -13,10 +15,12 @@ namespace OnlineShop.Products.Service
     {
 
         private IRepositoryProduct _repository;
+        private IRepositoryOption _repoOption;
 
-        public CommandServiceProduct(IRepositoryProduct repository)
+        public CommandServiceProduct(IRepositoryProduct repository, IRepositoryOption option)
         {
             _repository = repository;
+            _repoOption = option;
         }
 
         public async Task<DtoProductView> Create(CreateRequestProduct request)
@@ -69,25 +73,32 @@ namespace OnlineShop.Products.Service
         {
             var p = await _repository.GetById(id);
             if(p == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
-            var product = await _repository.AddOption(id, name);
-            if (product == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+
+           
+            var option = await _repoOption.GetByNameAsync(name);
+            if(option == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
+
+            var product = await _repository.AddOption(id,option);
+
             return product;
         }
 
         public async Task<DtoProductView> DeleteOption(int id, string name)
         {
 
-            var product = await _repository.GetById(id);
+            var product = await _repository.GetByIdAsync(id);
             if (product == null)
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
-            var dto =  await _repository.DeleteOption(id,name);
+            var option =  await _repoOption.GetByNameAsync(name);
 
-            if(dto == null)
+            if(option == null)
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
 
-            return dto;
+            product = await _repository.DeleteOption(id,name);
+
+            return product;
         }
     }
 }
