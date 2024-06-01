@@ -66,8 +66,6 @@ namespace OnlineShop.Options.Repository
         {
             var option = await _context.Options.FindAsync(id);
 
-            if (option == null) return null;
-
             option.Name = updateRequest.Name ?? option.Name;
             option.Price = updateRequest.Price ?? option.Price;
 

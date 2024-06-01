@@ -47,8 +47,7 @@ namespace OnlineShop.OrderDetailDetails.Service
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
-
-            return orderDetail;
+                return orderDetail;
         }
     }
 }

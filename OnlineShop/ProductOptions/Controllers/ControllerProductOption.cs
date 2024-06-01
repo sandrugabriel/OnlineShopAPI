@@ -3,6 +3,7 @@ using OnlineShop.Options.Models;
 using OnlineShop.Options.Service.interfaces;
 using OnlineShop.ProductOptions.Controllers.interfaces;
 using OnlineShop.ProductOptions.Model;
+using OnlineShop.ProductOptions.Service.interfaces;
 using OnlineShop.System.Exceptions;
 
 namespace OnlineShop.ProductOptions.Controllers
@@ -10,21 +11,19 @@ namespace OnlineShop.ProductOptions.Controllers
     public class ControllerProductOption : ControlerAPIProductOption
     {
 
-        IQueryServiceOption _queryServiceOption;
-        ICommandServiceOption _commandServiceOption;
+        IQueryServiceProductOption _queryServiceOption;
 
-        public ControllerProductOption(IQueryServiceOption queryServiceOption, ICommandServiceOption commandServiceOption)
+        public ControllerProductOption(IQueryServiceProductOption queryServiceOption)
         {
             _queryServiceOption = queryServiceOption;
-            _commandServiceOption = commandServiceOption;
         }
 
         public override async Task<ActionResult<List<ProductOption>>> GetAllAsync()
         {
             try
             {
-                var customer = await _queryServiceOption.GetAllAsync();
-                return Ok(customer);
+                var productOption = await _queryServiceOption.GetAllAsync();
+                return Ok(productOption);
             }
             catch (ItemsDoNotExist ex)
             {
@@ -36,10 +35,10 @@ namespace OnlineShop.ProductOptions.Controllers
         {
             try
             {
-                var customer = await _queryServiceOption.GetByIdAsync(id);
-                return Ok(customer);
+                var productOption = await _queryServiceOption.GetByIdAsync(id);
+                return Ok(productOption);
             }
-            catch (ItemsDoNotExist ex)
+            catch (ItemDoesNotExist ex)
             {
                 return NotFound(ex.Message);
             }

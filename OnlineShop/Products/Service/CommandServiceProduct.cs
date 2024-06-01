@@ -71,16 +71,16 @@ namespace OnlineShop.Products.Service
 
         public async Task<DtoProductView> AddOption(int id, string name)
         {
-            var p = await _repository.GetById(id);
+            var p = await _repository.GetByIdAsync(id);
             if(p == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
 
            
             var option = await _repoOption.GetByNameAsync(name);
             if(option == null) throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
 
-            var product = await _repository.AddOption(id,option);
+            p = await _repository.AddOption(id,option);
 
-            return product;
+            return p;
         }
 
         public async Task<DtoProductView> DeleteOption(int id, string name)
@@ -96,7 +96,7 @@ namespace OnlineShop.Products.Service
             if(option == null)
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
 
-            product = await _repository.DeleteOption(id,name);
+            await _repository.DeleteOption(id,name);
 
             return product;
         }
