@@ -81,15 +81,16 @@ namespace OnlineShop.Customers.Controllers
             {
                 var customer = await _commandServiceCustomer.UpdateCustomer(id,updateRequest);
                 return Ok(customer);
+            } 
+            catch (ItemDoesNotExist ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (InvalidName ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (ItemsDoNotExist ex)
-            {
-                return NotFound(ex.Message);
-            }
+           
         }
 
         public override async Task<ActionResult<DtoCustomerView>> DeleteCustomer([FromQuery] int id)
@@ -99,7 +100,7 @@ namespace OnlineShop.Customers.Controllers
                 var customer = await _commandServiceCustomer.DeleteCustomer(id);
                 return Ok(customer);
             }
-            catch (ItemsDoNotExist ex)
+            catch (ItemDoesNotExist ex)
             {
                 return NotFound(ex.Message);
             }

@@ -7,11 +7,11 @@ using OnlineShop.System.Exceptions;
 
 namespace OnlineShop.OrderDetailDetails.Controllers
 {
-    public class ControllerOrderDetailDetails : ControllerAPIOrderDetail
+    public class ControllerOrderDetails : ControllerAPIOrderDetail
     {
         IQueryServiceOrderDetail _queryServiceOrderDetail;
 
-        public ControllerOrderDetailDetails(IQueryServiceOrderDetail queryServiceOrderDetail)
+        public ControllerOrderDetails(IQueryServiceOrderDetail queryServiceOrderDetail)
         {
             _queryServiceOrderDetail = queryServiceOrderDetail;
         }
@@ -33,7 +33,8 @@ namespace OnlineShop.OrderDetailDetails.Controllers
         {
             try
             {
-                OrderDetail orderDetail = await _queryServiceOrderDetail.GetById(idOrderDetail);
+                var orderDetail = await _queryServiceOrderDetail.GetByIdAsync(idOrderDetail);
+
                 return Ok(orderDetail);
             }
             catch (ItemDoesNotExist ex)

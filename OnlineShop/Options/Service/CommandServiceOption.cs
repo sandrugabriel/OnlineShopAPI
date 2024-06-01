@@ -18,18 +18,18 @@ namespace OnlineShop.Options.Service
 
         public async Task<Option> CreateOption(CreateRequestOption createRequest)
         {
-            var option = await _repo.CreateOption(createRequest);
 
-            if (option.Name.Equals("") || option.Name.Equals("string"))
+
+            if (createRequest.Name.Equals("") || createRequest.Name.Equals("string"))
             {
                 throw new InvalidName(Constants.InvalidName);
             }
 
-            if (option.Price == 0)
+            if (createRequest.Price == 0)
             {
                 throw new InvalidPrice(Constants.InvalidPrice);
             }
-
+            var option = await _repo.CreateOption(createRequest);
 
             return option;
         }
@@ -49,23 +49,24 @@ namespace OnlineShop.Options.Service
                 throw new InvalidName(Constants.InvalidName);
             }
 
-            if (updateRequest.Price == 0)
+            if (option.Price == 0)
             {
                 throw new InvalidPrice(Constants.InvalidPrice);
             }
-
+           
             return option;
         }
 
         public async Task<Option> DeleteOption(int id)
         {
-            var option = await _repo.DeleteOption(id);
+            var option = await _repo.GetByIdAsync(id);
 
             if (option == null)
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
 
+            await _repo.DeleteOption(id);
             return option;
         }
 

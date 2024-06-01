@@ -30,12 +30,12 @@ namespace OnlineShop.Customers.Services
 
         public async Task<DtoCustomerView> CreateCustomer(CreateRequestCustomer createRequest)
         {
-           var customer = await _repo.CreateCustomer(createRequest);
-
-            if(customer.FullName.Equals("") || customer.FullName.Equals("string"))
+            if(createRequest.FullName.Equals("") || createRequest.FullName.Equals("string"))
             {
                 throw new InvalidName(Constants.InvalidName);
             }
+
+           var customer = await _repo.CreateCustomer(createRequest);
 
             return customer;
         }
@@ -43,7 +43,7 @@ namespace OnlineShop.Customers.Services
         public async Task<DtoCustomerView> UpdateCustomer(int id, UpdateRequestCustomer updateRequest)
         {
 
-            var customer = await _repo.UpdateCustomer(id,updateRequest);
+            var customer = await _repo.GetByIdAsync(id);
 
             if (customer == null)
             {
@@ -55,17 +55,19 @@ namespace OnlineShop.Customers.Services
                 throw new InvalidName(Constants.InvalidName);
             }
 
+            customer = await _repo.UpdateCustomer(id,updateRequest);
             return customer;
         }
 
         public async Task<DtoCustomerView> DeleteCustomer(int id)
         {
-            var customer = await _repo.DeleteCustomer(id);
+            var customer = await _repo.GetByIdAsync(id);
 
             if (customer == null)
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
+            await _repo.DeleteCustomer(id);
 
             return customer;
         }
@@ -97,13 +99,13 @@ namespace OnlineShop.Customers.Services
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
 
-            var order = await _repoOrder.GetById(idOrder);
+            var order = await _repoOrder.GetByIdAsync(idOrder);
             if(order == null)
             {
                 throw new ItemDoesNotExist(Constants.ItemDoesNotExist);
             }
 
-            customer = await _repo.DeleteOrder(idCustomer, idOrder);
+            await _repo.DeleteOrder(idCustomer, idOrder);
             return customer;
         }
 

@@ -49,13 +49,10 @@ namespace OnlineShop.Customers.Repository
         {
             var customer = await _context.Customers.FindAsync(id);
 
-            if (customer == null) return null;
-
             _context.Customers.Remove(customer);
 
             await _context.SaveChangesAsync();
 
-          
             return _mapper.Map<DtoCustomerView>(customer);
         }
 

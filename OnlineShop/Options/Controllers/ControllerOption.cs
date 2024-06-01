@@ -70,7 +70,7 @@ namespace OnlineShop.Options.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (ItemsDoNotExist ex)
+            catch (ItemDoesNotExist ex)
             {
                 return NotFound(ex.Message);
             }
@@ -87,7 +87,7 @@ namespace OnlineShop.Options.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (ItemsDoNotExist ex)
+            catch (ItemDoesNotExist ex)
             {
                 return NotFound(ex.Message);
             }
@@ -100,7 +100,7 @@ namespace OnlineShop.Options.Controllers
                 var customer = await _commandServiceOption.DeleteOption(id);
                 return Ok(customer);
             }
-            catch (ItemsDoNotExist ex)
+            catch (ItemDoesNotExist ex)
             {
                 return NotFound(ex.Message);
             }
